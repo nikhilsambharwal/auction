@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Auction</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Online Auction</h1>
+        <nav>
+            <ul>
+                <li><a href="#auction-items">Auction Items</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="auction-items">
+        <h2>Current Auction Items</h2>
+        <div class="auction-item" id="item1">
+            <img src="images/item1.jpg" alt="Auction Item 1"> <!-- Image path -->
+            <h3>Antique Vase</h3>
+            <p>Starting bid: $100</p>
+            <p id="item1-current-bid">Current bid: $100</p>
+            <p>Description: A beautiful antique vase from the 18th century.</p>
+            <form onsubmit="placeBid(event, 'item1', 100)">
+                <label for="bid-amount-1">Your bid ($):</label>
+                <input type="number" id="bid-amount-1" min="100" required>
+                <button type="submit">Place Bid</button>
+            </form>
+            <p>Time remaining: <span id="item1-timer">01:00</span> minutes</p>
+        </div>
+
+        <div class="auction-item" id="item2">
+            <img src="images/item2.jpg" alt="Auction Item 2"> <!-- Image path -->
+            <h3>Vintage Watch</h3>
+            <p>Starting bid: $200</p>
+            <p id="item2-current-bid">Current bid: $200</p>
+            <p>Description: A rare vintage watch, perfect for collectors.</p>
+            <form onsubmit="placeBid(event, 'item2', 200)">
+                <label for="bid-amount-2">Your bid ($):</label>
+                <input type="number" id="bid-amount-2" min="200" required>
+                <button type="submit">Place Bid</button>
+            </form>
+            <p>Time remaining: <span id="item2-timer">01:00</span> minutes</p>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <h2>Contact Us</h2>
+        <p>Email: contact@auction.com</p>
+        <p>Phone: (123) 456-7890</p>
+    </footer>
+
+    <script>
+        // Function to start the timer countdown
+        function startTimer(itemId, duration) {
+            let timerElement = document.getElementById(itemId + '-timer');
+            let timeRemaining = duration; // duration in seconds
+
+            let timer = setInterval(function() {
+                let minutes = Math.floor(timeRemaining / 60);
+                let seconds = timeRemaining % 60;
+                seconds = seconds < 10 ? '0' + seconds : seconds; // Ensure two-digit format
+                timerElement.textContent = `${minutes}:${seconds}`;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    alert(itemId + " auction has ended!");
+                    timerElement.textContent = "00:00"; // Ensure it says 00:00 after the timer ends
+                } else {
+                    timeRemaining--;
+                }
+            }, 1000);
+        }
+
+        // Start timers for both items with 1 minute (60 seconds)
+        startTimer('item1', 60); // 60 seconds countdown for item1
+        startTimer('item2', 60); // 60 seconds countdown for item2
+
+        // Function to handle placing a bid
+        function placeBid(event, itemId, startingBid) {
+            event.preventDefault();
+            
+            const bidInput = document.getElementById('bid-amount-' + itemId.substring(4));
+            const bidAmount = parseInt(bidInput.value);
+
+            const currentBidElement = document.getElementById(itemId + '-current-bid');
+            const currentBid = parseInt(currentBidElement.textContent.replace('Current bid: $', ''));
+
+            if (bidAmount <= currentBid) {
+                alert("Your bid must be higher than the current bid!");
+                return;
+            }
+
+            // Update the current bid with the new bid
+            currentBidElement.textContent = "Current bid: $" + bidAmount;
+            bidInput.value = ''; // Clear the bid input field
+            alert('Bid placed successfully for ' + itemId);
+        }
+    </script>
+</body>
+</html>
